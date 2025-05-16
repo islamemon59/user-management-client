@@ -1,31 +1,41 @@
-import React from "react";
+import React, { use } from "react";
 import { Link } from "react-router";
+import { AuthContext } from "../Context/Context";
+import Swal from "sweetalert2";
 
 const AddUser = () => {
+  const { users, setUsers } = use(AuthContext);
 
-    const handleAddUser = e => {
-        e.preventDefault()
-        const form = e.target
-        console.log(form);
-        const formData = new FormData(form)
-        const newUser = Object.fromEntries(formData.entries())
+  const handleAddUser = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    console.log(form);
+    const formData = new FormData(form);
+    const newUser = Object.fromEntries(formData.entries());
 
-        console.log(newUser);
+    console.log(newUser);
 
-        fetch("http://localhost:3000/users", {
-            method: "POST",
-            headers: {
-                "Content-Type" : "application/json"
-            },
-            body: JSON.stringify(newUser)
-        }).then(res => res.json())
-        .then(data => {
-            if(data.insertedId){
-                
-                console.log("after added data", data);
-            }
-        })
-    }
+    fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.insertedId) {
+          setUsers([...users, newUser]);
+          Swal.fire({
+            title: "User Added Successfully!",
+            icon: "success",
+            draggable: true,
+          });
+          form.reset()
+          console.log("after added data", data);
+        }
+      });
+  };
 
   return (
     <div>
@@ -37,10 +47,13 @@ const AddUser = () => {
         <p>Use the below form to create </p>
       </div>
       <div className="w-full">
-        <form onSubmit={handleAddUser} className="fieldset  rounded-box mx-auto w-5xl p-4">
+        <form
+          onSubmit={handleAddUser}
+          className="fieldset  rounded-box mx-auto w-5xl p-4"
+        >
           <label className="label">Name</label>
           <input
-          name="name"
+            name="name"
             type="text"
             className="input w-full"
             placeholder="My awesome page"
@@ -48,7 +61,7 @@ const AddUser = () => {
 
           <label className="label">Email</label>
           <input
-          name="email"
+            name="email"
             type="email"
             className="input w-full"
             placeholder="my-awesome-page"
