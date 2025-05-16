@@ -4,7 +4,9 @@ import { Outlet } from 'react-router';
 function MainLayout() {
   return (
     <div>
-        <Outlet></Outlet>
+        <div className='max-w-6xl mx-auto'>
+            <Outlet></Outlet>
+        </div>
     </div>
   );
 }
