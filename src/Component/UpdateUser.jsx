@@ -1,44 +1,37 @@
 import React, { use } from "react";
-import { Link } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import { AuthContext } from "../Context/Context";
-import Swal from "sweetalert2";
+import Header from "./Header";
 
-const AddUser = () => {
+const UpdateUser = () => {
+  const { _id, name, email } = useLoaderData();
   const { users, setUsers } = use(AuthContext);
 
-  const handleAddUser = (e) => {
-    e.preventDefault();
+  const handleUpdateUser = (e) => {
     const form = e.target;
-    console.log(form);
-    const formData = new FormData(form);
-    const newUser = Object.fromEntries(formData.entries());
-
-    console.log(newUser);
-
-    fetch("http://localhost:3000/users", {
-      method: "POST",
+    const name = form.name.value;
+    const email = form.email.value;
+    const updatedUser = { name, email };
+    e.preventDefault();
+    fetch(`http://localhost:3000/users/${_id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newUser),
+      body: JSON.stringify({ email }),
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.insertedId) {
-          setUsers([...users, newUser]);
-          Swal.fire({
-            title: "User Added Successfully!",
-            icon: "success",
-            draggable: true,
-          });
-          form.reset()
-          console.log("after added data", data);
+        if (data.modifiedCount) {
+          setUsers([...users, updatedUser]);
+          console.log("data after updated", data);
         }
       });
   };
 
   return (
     <div>
+      <Header></Header>
       <div className="my-10">
         <Link
           className="text-blue-700 w-[135px] font-bold px-4 py-2 shadow flex items-center gap-2"
@@ -58,11 +51,12 @@ const AddUser = () => {
       </div>
       <div className="w-full">
         <form
-          onSubmit={handleAddUser}
+          onSubmit={handleUpdateUser}
           className="fieldset  rounded-box mx-auto w-5xl p-4"
         >
           <label className="label">Name</label>
           <input
+            defaultValue={name}
             name="name"
             type="text"
             className="input w-full"
@@ -71,6 +65,7 @@ const AddUser = () => {
 
           <label className="label">Email</label>
           <input
+            defaultValue={email}
             name="email"
             type="email"
             className="input w-full"
@@ -108,4 +103,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default UpdateUser;

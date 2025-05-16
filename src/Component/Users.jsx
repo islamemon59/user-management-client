@@ -37,11 +37,21 @@ const Users = () => {
   return (
     <div>
       <Header></Header>
+
       <div className="my-10">
-        <Link className="text-blue-700 underline" to="/">
-          Add User
+        <Link
+          className="text-blue-700 w-[135px] font-bold px-4 py-2 shadow flex items-center gap-2"
+          to="/"
+        >
+          New User{" "}
+          <img
+            className="w-5"
+            src="https://img.icons8.com/?size=40&id=41737&format=png"
+            alt="user"
+          />
         </Link>
       </div>
+
       <div className="mt-10">
         <div className="overflow-x-auto">
           <table className="table">
@@ -79,7 +89,7 @@ const Users = () => {
                   <td></td>
                   <td></td>
                   <th className="space-x-2">
-                    <Link>
+                    <Link to={`/updateUser/${user._id}`}>
                       {" "}
                       <button className="btn btn-xs font-bold text-xl">
                         <img
